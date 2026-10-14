@@ -85,6 +85,7 @@ docs/
 | `docs/health/1a-comparison-fhir-datastore.md` | So sánh 5 cách lưu: cột cố định (OpenEMR), EAV chuỗi, JSONB, bảng index theo kiểu (HAPI), bảng rộng (Medplum). Checklist chọn cho MVP. Phụ lục tìm tên tiếng Việt |
 | `docs/health/1b-search.md` | Search FHIR → SQL: dispatch theo chiến lược lưu trữ, bộ lọc tenant/phân quyền gắn vào mọi query, chained/_has, _include, cursor, đếm ước lượng. AccessPolicy `criteria` chính là 1 câu search |
 | `docs/health/1c-*.md` (3 file) | Phân quyền: G (chuỗi phòng khám, V1→V3), R (Project → ProjectMembership → AccessPolicy → compartment, điểm chặn), C (6 kỹ thuật: RBAC OpenEMR, cột tenant, RLS, ACL cặp, HAPI policy-as-code, Medplum policy-as-data) |
+| `docs/health/1d-auth-smart.md` | User / ProjectMembership / Login / ClientApplication, các grant type, SMART on FHIR (scope ∩ policy, ngữ cảnh bệnh nhân), on-behalf-of, so với OpenEMR |
 
 ### Đánh giá nguồn học (đã chốt)
 
@@ -145,6 +146,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 | 1a | `1a-comparison-fhir-datastore.md` | C | ✅ Xong |
 | 1b | `1b-search.md` | R | ✅ Xong |
 | 1c | `1c-greenfield-phan-quyen.md`, `1c-access-control.md`, `1c-comparison-phan-quyen.md` | G + R + C | ✅ Xong |
+| 1d | `1d-auth-smart.md` | R | ✅ Xong |
 | còn lại | Xem `docs/health/plan.md` mục 4 | | ⏳ Chưa |
 
 ### Việc tiếp theo
