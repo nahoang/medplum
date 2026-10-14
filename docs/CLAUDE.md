@@ -86,6 +86,7 @@ docs/
 | `docs/health/1b-search.md` | Search FHIR → SQL: dispatch theo chiến lược lưu trữ, bộ lọc tenant/phân quyền gắn vào mọi query, chained/_has, _include, cursor, đếm ước lượng. AccessPolicy `criteria` chính là 1 câu search |
 | `docs/health/1c-*.md` (3 file) | Phân quyền: G (chuỗi phòng khám, V1→V3), R (Project → ProjectMembership → AccessPolicy → compartment, điểm chặn), C (6 kỹ thuật: RBAC OpenEMR, cột tenant, RLS, ACL cặp, HAPI policy-as-code, Medplum policy-as-data) |
 | `docs/health/1d-auth-smart.md` | User / ProjectMembership / Login / ClientApplication, các grant type, SMART on FHIR (scope ∩ policy, ngữ cảnh bệnh nhân), on-behalf-of, so với OpenEMR |
+| `docs/health/1e-terminology.md`, `1e-comparison-terminology.md` | Bảng mã: CodeSystem/ValueSet/ConceptMap, bảng `Coding` + `Coding_Property` (EAV), cây is-a bằng CTE đệ quy, `$expand` không dấu. So sánh 6 cách lưu cây mã (OpenEMR phẳng, Medplum kề+CTE, HAPI tổ tiên sẵn + pre-expansion, closure, server ngoài) |
 
 ### Đánh giá nguồn học (đã chốt)
 
@@ -131,8 +132,10 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
    - HAPI bỏ dấu khi index tên (`SP_VALUE_NORMALIZED`).
    - Medplum search `HumanName` bằng `LIKE`/`ILIKE`, không thấy bỏ dấu (`lookups/lookuptable.ts:138,176`). Nhiều khả năng `Patient?name=nguyen` không khớp "Nguyễn". **Cần test thật.**
    - Medplum có `medplum_unaccent` nhưng chỉ dùng cho `$expand` và patient match.
-6. HAPI và Medplum đều thoả đủ yêu cầu, khác nhau ở đánh đổi **dòng ↔ cột**: HAPI chạy nhiều loại DB, Medplum gắn chặt Postgres.
-7. Triết lý đối lập: **Medplum "chuẩn trước, nghiệp vụ tự xây"** vs **OpenEMR "nghiệp vụ trước, FHIR là lớp dịch"** (`src/Services/FHIR/*`).
+   - **Chữ Đ/đ không có dạng tách dấu trong Unicode.** `foldText` (JS) của Medplum và bộ chuẩn hoá của HAPI đều **không** đổi Đ → D. `unaccent` của Postgres (dùng trong `$expand`) nhiều khả năng có. Cần test.
+6. **Medplum không hỗ trợ search `code:in=ValueSet` và `code:below=`** (`token-column.ts:240-255`). HAPI hỗ trợ bằng cách tự expand rồi so danh sách mã. Cách làm thay trên Medplum: `$expand` rồi search danh sách mã, hoặc Bot gắn nhãn lúc ghi.
+7. HAPI và Medplum đều thoả đủ yêu cầu, khác nhau ở đánh đổi **dòng ↔ cột**: HAPI chạy nhiều loại DB, Medplum gắn chặt Postgres.
+8. Triết lý đối lập: **Medplum "chuẩn trước, nghiệp vụ tự xây"** vs **OpenEMR "nghiệp vụ trước, FHIR là lớp dịch"** (`src/Services/FHIR/*`).
 
 ### Tiến độ
 
@@ -147,6 +150,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 | 1b | `1b-search.md` | R | ✅ Xong |
 | 1c | `1c-greenfield-phan-quyen.md`, `1c-access-control.md`, `1c-comparison-phan-quyen.md` | G + R + C | ✅ Xong |
 | 1d | `1d-auth-smart.md` | R | ✅ Xong |
+| 1e | `1e-terminology.md`, `1e-comparison-terminology.md` | R + C | ✅ Xong |
 | còn lại | Xem `docs/health/plan.md` mục 4 | | ⏳ Chưa |
 
 ### Việc tiếp theo

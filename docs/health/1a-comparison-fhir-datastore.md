@@ -462,7 +462,7 @@ Giống phản đối 3 của bài Saleor. NULL trên Postgres gần như miễn
 
 | Hệ thống | Hành vi | Nguồn |
 |---|---|---|
-| HAPI | Có cột `SP_VALUE_NORMALIZED` bỏ dấu + viết hoa. Tìm `name=nguyen` khớp "Nguyễn" | ✅ `StringUtil.java:42-70`, `ResourceIndexedSearchParamString.java:117` |
+| HAPI | Có cột `SP_VALUE_NORMALIZED` bỏ dấu + viết hoa. Tìm `name=nguyen` khớp "Nguyễn". **Nhưng** chỉ bỏ ký tự U+0300–036F sau NFD, mà `Đ`/`đ` không tách dấu được, nên "Đặng" thành "ĐANG": tìm `dang` **không** khớp | ✅ `StringUtil.java:42-70`, `ResourceIndexedSearchParamString.java:117` |
 | Medplum, search tên (`HumanName`) | So khớp bằng `LIKE`/`ILIKE` (`lookups/lookuptable.ts:138,176-177`; `humanname.ts:60`), **không thấy bước bỏ dấu** | ✅ code. 🧠 Kết luận "không khớp" là suy luận từ code, **cần test thật** |
 | Medplum, terminology `$expand` & ghép bệnh nhân | **Có** bỏ dấu: hàm SQL `medplum_unaccent` (`fhir/sql.ts:1394-1397`), `foldText` (`util/text.ts`, dùng ở `operations/expand.ts:19`, `operations/utils/cms-patient-match.ts:5`) | ✅ |
 

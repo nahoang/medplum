@@ -82,7 +82,7 @@ packages/server/src/fhir/search.ts:113   searchImpl
 |---|---|---|
 | Prefix so sánh | `eq ne gt lt ge le sa eb ap` | `value-quantity=gt140`: huyết áp trên 140. `date=ge2026-01-01`: từ đầu năm |
 | Modifier chuỗi | `:contains :exact` (mặc định là "bắt đầu bằng") | `name:contains=Lan` |
-| Modifier token | `:text :not :above :below :in :not-in :of-type` | `code:in=ValueSet/tieu-duong`: mọi mã thuộc nhóm tiểu đường |
+| Modifier token | `:text :not` (dùng được). `:above :below :in :not-in :of-type` có trong danh sách của core nhưng **server từ chối** với tham số `token-column` (`fhir/token-column.ts:240-255`) | `code:not=8480-6` |
 | Có / không có | `:missing :present` | `Observation?interpretation:missing=true`: kết quả chưa diễn giải |
 | Định danh | `:identifier` | `subject:identifier=https://bhyt.gov.vn\|HT27…`: tìm theo số thẻ BHYT thay vì id |
 | Lặp | `:iterate` | `_include:iterate`: lấy kèm nhiều tầng |
@@ -91,7 +91,7 @@ packages/server/src/fhir/search.ts:113   searchImpl
 
 📘 `_filter` là ngôn ngữ biểu thức đầy đủ (có `and`/`or`/ngoặc) cho câu hỏi mà cú pháp URL thường không diễn đạt được. VD "huyết áp > 140 **hoặc** nhịp tim > 120". ✅ `search.ts:1124-1204`.
 
-**:in với ValueSet** là chỗ search chạm vào terminology. "Mọi Condition thuộc nhóm bệnh tim mạch" không liệt kê từng mã ICD mà trỏ vào 1 ValueSet. Xem module 1e.
+**Giới hạn đáng biết: không search được theo ValueSet.** 📘 Chuẩn FHIR cho phép `code:in=ValueSet/tim-mach` (mọi Condition có mã thuộc nhóm bệnh tim mạch) và `code:below=…` (mã con trong cây). ✅ Tại commit này, Medplum **từ chối** cả 2 cho tham số token (`fhir/token-column.ts:240-255` ném `invalidSearchOperator`), và bộ so khớp trong bộ nhớ (`packages/core/src/search/match.ts`) cũng không xử lý `IN`/`BELOW`. 🧠 Cách làm thay: gọi `ValueSet/$expand` lấy danh sách mã, rồi search `code=sys|a,sys|b,…` (dấu phẩy = OR). Danh sách dài thì chia lô. Xem module [1e](./1e-terminology.md).
 
 ## 4. Từ bộ lọc thành SQL: dispatch theo chiến lược lưu trữ
 
@@ -238,4 +238,4 @@ Bộ dựng câu `WHERE` dùng chung ở `src/Services/Search/` (`FhirSearchWher
 1. Câu `Patient?_has:Observation:subject:code=4548-4&_has:Observation:subject:value-quantity=gt9` có nghĩa giống "bệnh nhân có HbA1c > 9" không? Vì sao không? (Gợi ý: 2 điều kiện `_has` có thể khớp 2 Observation **khác nhau**.)
 2. 1 user có AccessPolicy `Observation?subject.organization=Organization/an-binh`. Câu search `Observation?code=8480-6` của họ thành SQL có mấy tầng `EXISTS`?
 3. Vì sao Medplum lấy `LIMIT count + 1` thay vì chạy `COUNT(*)`?
-4. Subscription có `criteria = Observation?code:in=ValueSet/tieu-duong`. Bộ máy nào đánh giá điều kiện này, và cần gì để nó chạy đúng?
+4. Muốn Subscription báo mọi Observation có mã thuộc ValueSet "tiểu đường". Vì sao không viết được `criteria = Observation?code:in=ValueSet/tieu-duong`, và nên viết thế nào?
