@@ -83,6 +83,7 @@ docs/
 | `docs/health/0b-ban-do-nghiep-vu-resource.md` | Bảng tra: nghiệp vụ → resource FHIR → operation Medplum → bảng OpenEMR, kèm stakeholder |
 | `docs/health/1a-fhir-datastore.md` | Medplum lưu resource xuống Postgres thế nào (4 chiến lược index, lịch sử, tiến hoá TEXT → NUMRANGE), đối chiếu OpenEMR |
 | `docs/health/1a-comparison-fhir-datastore.md` | So sánh 5 cách lưu: cột cố định (OpenEMR), EAV chuỗi, JSONB, bảng index theo kiểu (HAPI), bảng rộng (Medplum). Checklist chọn cho MVP. Phụ lục tìm tên tiếng Việt |
+| `docs/health/1b-search.md` | Search FHIR → SQL: dispatch theo chiến lược lưu trữ, bộ lọc tenant/phân quyền gắn vào mọi query, chained/_has, _include, cursor, đếm ước lượng. AccessPolicy `criteria` chính là 1 câu search |
 
 ### Đánh giá nguồn học (đã chốt)
 
@@ -141,7 +142,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 | 0b | `0b-ban-do-nghiep-vu-resource.md` | R | ✅ Xong |
 | 1a | `1a-fhir-datastore.md` | R | ✅ Xong |
 | 1a | `1a-comparison-fhir-datastore.md` | C | ✅ Xong |
-| 1b | Search → SQL | R | ⏳ Chưa |
+| 1b | `1b-search.md` | R | ✅ Xong |
 | 1c | Multi-tenancy & phân quyền | G + R + C | ⏳ Chưa |
 | còn lại | Xem `docs/health/plan.md` mục 4 | | ⏳ Chưa |
 
@@ -150,8 +151,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 Theo thứ tự ưu tiên. Hỏi người dùng nếu họ muốn đổi.
 
 1. **Hỏi người dùng 3 câu chưa biết** ở mục "Bối cảnh". Câu trả lời có thể cắt kế hoạch từ 14 xuống khoảng 6–8 tuần. VD dự án Việt Nam thì thay Giai đoạn 4 bằng chuẩn BHYT.
-2. Viết `1b-search.md` (R): `packages/server/src/fhir/search.ts`, chained search ở `search.ts:1689`.
-3. Viết module 1c theo G → R → C. Bối cảnh greenfield: *"Nhiều phòng khám chung 1 server, bác sĩ chỉ thấy bệnh nhân của mình"*. Code: `packages/server/src/fhir/accesspolicy.ts`, cột `compartments`, `repo.ts:1961`.
+2. Viết module 1c theo G → R → C. Bối cảnh greenfield: *"Nhiều phòng khám chung 1 server, bác sĩ chỉ thấy bệnh nhân của mình"*. Code: `packages/server/src/fhir/accesspolicy.ts`, cột `compartments`, `repo.ts:1961`.
 
 ### Câu hỏi còn mở
 
