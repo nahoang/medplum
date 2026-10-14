@@ -84,6 +84,7 @@ docs/
 | `docs/health/1a-fhir-datastore.md` | Medplum lưu resource xuống Postgres thế nào (4 chiến lược index, lịch sử, tiến hoá TEXT → NUMRANGE), đối chiếu OpenEMR |
 | `docs/health/1a-comparison-fhir-datastore.md` | So sánh 5 cách lưu: cột cố định (OpenEMR), EAV chuỗi, JSONB, bảng index theo kiểu (HAPI), bảng rộng (Medplum). Checklist chọn cho MVP. Phụ lục tìm tên tiếng Việt |
 | `docs/health/1b-search.md` | Search FHIR → SQL: dispatch theo chiến lược lưu trữ, bộ lọc tenant/phân quyền gắn vào mọi query, chained/_has, _include, cursor, đếm ước lượng. AccessPolicy `criteria` chính là 1 câu search |
+| `docs/health/1c-*.md` (3 file) | Phân quyền: G (chuỗi phòng khám, V1→V3), R (Project → ProjectMembership → AccessPolicy → compartment, điểm chặn), C (6 kỹ thuật: RBAC OpenEMR, cột tenant, RLS, ACL cặp, HAPI policy-as-code, Medplum policy-as-data) |
 
 ### Đánh giá nguồn học (đã chốt)
 
@@ -143,7 +144,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 | 1a | `1a-fhir-datastore.md` | R | ✅ Xong |
 | 1a | `1a-comparison-fhir-datastore.md` | C | ✅ Xong |
 | 1b | `1b-search.md` | R | ✅ Xong |
-| 1c | Multi-tenancy & phân quyền | G + R + C | ⏳ Chưa |
+| 1c | `1c-greenfield-phan-quyen.md`, `1c-access-control.md`, `1c-comparison-phan-quyen.md` | G + R + C | ✅ Xong |
 | còn lại | Xem `docs/health/plan.md` mục 4 | | ⏳ Chưa |
 
 ### Việc tiếp theo
@@ -151,7 +152,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 Theo thứ tự ưu tiên. Hỏi người dùng nếu họ muốn đổi.
 
 1. **Hỏi người dùng 3 câu chưa biết** ở mục "Bối cảnh". Câu trả lời có thể cắt kế hoạch từ 14 xuống khoảng 6–8 tuần. VD dự án Việt Nam thì thay Giai đoạn 4 bằng chuẩn BHYT.
-2. Viết module 1c theo G → R → C. Bối cảnh greenfield: *"Nhiều phòng khám chung 1 server, bác sĩ chỉ thấy bệnh nhân của mình"*. Code: `packages/server/src/fhir/accesspolicy.ts`, cột `compartments`, `repo.ts:1961`.
+2. Tiếp tục theo `docs/health/plan.md`: 1d (auth/SMART), 1e (terminology R+C), 1f (lịch sử/audit/xoá), rồi Giai đoạn 2–5. Người dùng đã yêu cầu **đào đầy đủ mọi module** rồi tự chọn đọc phần nào.
 
 ### Câu hỏi còn mở
 
