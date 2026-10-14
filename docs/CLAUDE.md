@@ -87,6 +87,7 @@ docs/
 | `docs/health/1c-*.md` (3 file) | Phân quyền: G (chuỗi phòng khám, V1→V3), R (Project → ProjectMembership → AccessPolicy → compartment, điểm chặn), C (6 kỹ thuật: RBAC OpenEMR, cột tenant, RLS, ACL cặp, HAPI policy-as-code, Medplum policy-as-data) |
 | `docs/health/1d-auth-smart.md` | User / ProjectMembership / Login / ClientApplication, các grant type, SMART on FHIR (scope ∩ policy, ngữ cảnh bệnh nhân), on-behalf-of, so với OpenEMR |
 | `docs/health/1e-terminology.md`, `1e-comparison-terminology.md` | Bảng mã: CodeSystem/ValueSet/ConceptMap, bảng `Coding` + `Coding_Property` (EAV), cây is-a bằng CTE đệ quy, `$expand` không dấu. So sánh 6 cách lưu cây mã (OpenEMR phẳng, Medplum kề+CTE, HAPI tổ tiên sẵn + pre-expansion, closure, server ngoài) |
+| `docs/health/1f-history-audit-deletion.md` | Lịch sử phiên bản vs AuditEvent (log hoặc DB) vs 4 mức xoá (mềm, expunge, expunge everything, purge), If-Match, so với bảng `log` có checksum của OpenEMR |
 
 ### Đánh giá nguồn học (đã chốt)
 
@@ -151,6 +152,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 | 1c | `1c-greenfield-phan-quyen.md`, `1c-access-control.md`, `1c-comparison-phan-quyen.md` | G + R + C | ✅ Xong |
 | 1d | `1d-auth-smart.md` | R | ✅ Xong |
 | 1e | `1e-terminology.md`, `1e-comparison-terminology.md` | R + C | ✅ Xong |
+| 1f | `1f-history-audit-deletion.md` | R | ✅ Xong. **Hết Giai đoạn 1** |
 | còn lại | Xem `docs/health/plan.md` mục 4 | | ⏳ Chưa |
 
 ### Việc tiếp theo
@@ -158,7 +160,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 Theo thứ tự ưu tiên. Hỏi người dùng nếu họ muốn đổi.
 
 1. **Hỏi người dùng 3 câu chưa biết** ở mục "Bối cảnh". Câu trả lời có thể cắt kế hoạch từ 14 xuống khoảng 6–8 tuần. VD dự án Việt Nam thì thay Giai đoạn 4 bằng chuẩn BHYT.
-2. Tiếp tục theo `docs/health/plan.md`: 1d (auth/SMART), 1e (terminology R+C), 1f (lịch sử/audit/xoá), rồi Giai đoạn 2–5. Người dùng đã yêu cầu **đào đầy đủ mọi module** rồi tự chọn đọc phần nào.
+2. Tiếp tục theo `docs/health/plan.md`: Giai đoạn 2 (2a subscriptions R+C, 2b bots R+C, 2c agent/HL7v2, 2d interoperability), rồi Giai đoạn 3–5. Người dùng đã yêu cầu **đào đầy đủ mọi module** rồi tự chọn đọc phần nào.
 
 ### Câu hỏi còn mở
 
