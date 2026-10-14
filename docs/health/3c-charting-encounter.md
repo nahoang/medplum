@@ -85,7 +85,7 @@ Encounter là **điểm neo của tiền**: claim được lập theo lần khá
 2. **`Provenance.signature` không có chữ ký số.** Trường `data` (chữ ký thật) để trống. Đây là chữ ký **thủ tục** (ai, lúc nào), không chứng minh nội dung không bị sửa sau đó. Chứng minh nội dung dựa vào `_history` ([1f](./1f-history-audit-deletion.md)).
 3. **Ký không nguyên tử.** 3 bước trên là 3+ request riêng. Mạng đứt giữa chừng thì Task đã đóng mà chưa có Provenance. Có thể gói vào 1 Bundle `transaction`.
 
-📘 Pháp lý (K3): ở Mỹ, hồ sơ đã ký phải giữ nguyên, chỉ được bổ sung (addendum). Ở Việt Nam, hồ sơ bệnh án điện tử có quy định riêng về chữ ký số (Thông tư 46/2018/TT-BYT về hồ sơ bệnh án điện tử, **cần kiểm tra văn bản hiện hành**). Chữ ký "thủ tục" như app mẫu nhiều khả năng **không đủ**.
+📘 Pháp lý (K3): ở Mỹ, hồ sơ đã ký phải giữ nguyên, chỉ được bổ sung (addendum). Ở Việt Nam, **Thông tư 13/2025/TT-BYT** (ban hành 06/6/2025) hướng dẫn triển khai hồ sơ bệnh án điện tử, **thay thế Thông tư 46/2018/TT-BYT**. Hồ sơ phải gắn với số định danh cá nhân của người bệnh (nguồn tổng hợp, chưa đối chiếu bản gốc: [caselaw.vn](https://caselaw.vn/van-ban-phap-luat/587211-thong-tu-so-13-2025-tt-byt-ngay-06-06-2025-cua-bo-truong-bo-y-te-huong-dan-trien-khai-ho-so-benh-an-dien-tu), [hoatieu.vn](https://hoatieu.vn/phap-luat/thong-tu-13-2025-tt-byt-233052)). 🧠 Bệnh án điện tử ở Việt Nam dùng chữ ký số. Chữ ký "thủ tục" như app mẫu nhiều khả năng **không đủ**, cần đọc bản gốc để biết yêu cầu cụ thể.
 
 ## 5. Tóm tắt bệnh nhân: resource nào vào mục nào
 
