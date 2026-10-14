@@ -166,10 +166,24 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 
 ### Việc tiếp theo
 
-Theo thứ tự ưu tiên. Hỏi người dùng nếu họ muốn đổi.
+**Trạng thái:** đã xong Giai đoạn 0, 1, 2 (17 file). Người dùng đã yêu cầu **đào đầy đủ mọi module** rồi tự chọn phần đọc. Không cần hỏi lại "có làm tiếp không", cứ làm tiếp theo thứ tự dưới.
 
-1. **Hỏi người dùng 3 câu chưa biết** ở mục "Bối cảnh". Câu trả lời có thể cắt kế hoạch từ 14 xuống khoảng 6–8 tuần. VD dự án Việt Nam thì thay Giai đoạn 4 bằng chuẩn BHYT.
-2. Tiếp tục theo `docs/health/plan.md`: Giai đoạn 3 (3a G+R, 3b G+R+C, 3c R, 3d G+R, 3e–3i R), rồi Giai đoạn 4–5. Người dùng đã yêu cầu **đào đầy đủ mọi module** rồi tự chọn đọc phần nào.
+1. **Giai đoạn 3**, theo `docs/health/plan.md` mục 4:
+   - **3a** định danh & tiếp nhận (G + R): `fhir/operations/patientmatch.ts`, `operations/utils/cms-patient-match.ts`, `operations/extract.ts`, `lookups/humanname.ts`. Đối chứng OpenEMR `patient_data.dupscore`, `src/Services/Patient/DuplicatePatientService.php`.
+   - **3b** đặt lịch (G + R + C): `operations/find.ts`, `hold.ts`, `book.ts`, `confirm.ts`, `cancel.ts`, `reschedule.ts`, `*.recurring.test.ts`, `operations/utils/scheduling.ts`, `packages/core/src/scheduling.ts`. Đối chứng OpenEMR `openemr_postcalendar_events`. Bối cảnh G: 2 bệnh nhân giữ cùng 1 slot.
+   - **3c** charting (R), **3d** care plan/Task (G + R: `operations/plandefinitionapply.ts`), **3e–3i** (R ngắn: thuốc, xét nghiệm/DICOM, questionnaire, communication, consent).
+2. **Giai đoạn 4** (revenue cycle, sát chuyên môn người dùng): 4a eligibility (G + R), 4b định giá `chargeitemdefinitionapply.ts` (G + R + C), 4c claim `claimsubmit.ts`, `claimexport.ts`, `operations/utils/cms1500pdf.ts` (R), 4d `evaluatemeasure.ts` (R). Đối chứng OpenEMR `src/Billing/`. Thêm phụ lục BHYT Việt Nam (dùng WebSearch, ghi nguồn).
+3. **Giai đoạn 5**: 5a quota/rate limit, 5b self-host/sharding/migration, 5c vòng đời project, 5d bài tổng hợp chiến lược.
+4. Khi xong tất cả: viết `docs/health/README.md` làm mục lục đọc theo vai trò (consultant / BA / dev).
+
+**Quy trình mỗi module** (đã dùng ổn định ở phiên trước):
+1. Đọc code bằng `grep -n` / `sed -n`.
+2. Viết file.
+3. **Kiểm lại mọi `file:line`** (khoảng 1/3 bị lệch vài dòng ở bản nháp).
+4. Cập nhật bảng "File" + "Tiến độ" trong file này.
+5. `git add -A docs && git add -f docs/CLAUDE.md`, commit (kèm dòng Co-Authored-By/Claude-Session theo system reminder), `git push -u origin claude/peaceful-allen-kdyk9w`.
+
+Clone lại OpenEMR/HAPI nếu cần (lệnh ở mục "Bối cảnh"). Phiên mới không còn bản clone cũ.
 
 ### Câu hỏi còn mở
 
