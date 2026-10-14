@@ -88,6 +88,7 @@ docs/
 | `docs/health/1d-auth-smart.md` | User / ProjectMembership / Login / ClientApplication, các grant type, SMART on FHIR (scope ∩ policy, ngữ cảnh bệnh nhân), on-behalf-of, so với OpenEMR |
 | `docs/health/1e-terminology.md`, `1e-comparison-terminology.md` | Bảng mã: CodeSystem/ValueSet/ConceptMap, bảng `Coding` + `Coding_Property` (EAV), cây is-a bằng CTE đệ quy, `$expand` không dấu. So sánh 6 cách lưu cây mã (OpenEMR phẳng, Medplum kề+CTE, HAPI tổ tiên sẵn + pre-expansion, closure, server ngoài) |
 | `docs/health/1f-history-audit-deletion.md` | Lịch sử phiên bản vs AuditEvent (log hoặc DB) vs 4 mức xoá (mềm, expunge, expunge everything, purge), If-Match, so với bảng `log` có checksum của OpenEMR |
+| `docs/health/2a-subscriptions.md`, `2a-comparison-event-delivery.md` | Subscription: dispatch queue → subscription worker, 5 lớp lọc (FHIRPath `%previous`), rest-hook/Bot/websocket, retry 4–19 lần, tự tắt, HMAC. So sánh 6 cách: polling, hook đồng bộ (OpenEMR), trigger, hàng đợi sau commit (Medplum), outbox (HAPI), CDC |
 
 ### Đánh giá nguồn học (đã chốt)
 
@@ -135,8 +136,9 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
    - Medplum có `medplum_unaccent` nhưng chỉ dùng cho `$expand` và patient match.
    - **Chữ Đ/đ không có dạng tách dấu trong Unicode.** `foldText` (JS) của Medplum và bộ chuẩn hoá của HAPI đều **không** đổi Đ → D. `unaccent` của Postgres (dùng trong `$expand`) nhiều khả năng có. Cần test.
 6. **Medplum không hỗ trợ search `code:in=ValueSet` và `code:below=`** (`token-column.ts:240-255`). HAPI hỗ trợ bằng cách tự expand rồi so danh sách mã. Cách làm thay trên Medplum: `$expand` rồi search danh sách mã, hoặc Bot gắn nhãn lúc ghi.
-7. HAPI và Medplum đều thoả đủ yêu cầu, khác nhau ở đánh đổi **dòng ↔ cột**: HAPI chạy nhiều loại DB, Medplum gắn chặt Postgres.
-8. Triết lý đối lập: **Medplum "chuẩn trước, nghiệp vụ tự xây"** vs **OpenEMR "nghiệp vụ trước, FHIR là lớp dịch"** (`src/Services/FHIR/*`).
+7. **Subscription của Medplum có thể mất sự kiện**: enqueue vào Redis sau commit, lỗi chỉ được log (`workers/index.ts:77-85`). HAPI dùng outbox trong DB (`HFJ_RESOURCE_MODIFIED`). Quy trình nguy hiểm cần thêm cron quét làm lưới an toàn.
+8. HAPI và Medplum đều thoả đủ yêu cầu, khác nhau ở đánh đổi **dòng ↔ cột**: HAPI chạy nhiều loại DB, Medplum gắn chặt Postgres.
+9. Triết lý đối lập: **Medplum "chuẩn trước, nghiệp vụ tự xây"** vs **OpenEMR "nghiệp vụ trước, FHIR là lớp dịch"** (`src/Services/FHIR/*`).
 
 ### Tiến độ
 
@@ -153,6 +155,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 | 1d | `1d-auth-smart.md` | R | ✅ Xong |
 | 1e | `1e-terminology.md`, `1e-comparison-terminology.md` | R + C | ✅ Xong |
 | 1f | `1f-history-audit-deletion.md` | R | ✅ Xong. **Hết Giai đoạn 1** |
+| 2a | `2a-subscriptions.md`, `2a-comparison-event-delivery.md` | R + C | ✅ Xong |
 | còn lại | Xem `docs/health/plan.md` mục 4 | | ⏳ Chưa |
 
 ### Việc tiếp theo
