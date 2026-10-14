@@ -2,7 +2,7 @@
 
 > Áp đúng phương pháp đã dùng cho Saleor (xem [`templates/`](./templates/README.md)), chuyển sang domain **y tế số / FHIR**. Mục tiêu không phải thuộc lòng Medplum. Mục tiêu là hiểu **nghiệp vụ y tế** (đặt lịch, kê đơn, xét nghiệm, thanh toán bảo hiểm, tuân thủ pháp lý) và **vì sao một nền tảng thật hiện thực nó theo cách này**. Medplum là bằng chứng code (`file:line`) cho từng kết luận.
 >
-> File này là **kế hoạch**: nói rõ học gì, theo thứ tự nào, dùng template nào, đọc file nào. Kết quả học được ghi vào `docs/domain/knowledge/`, mỗi module 1 đến 3 file.
+> File này là **kế hoạch**: nói rõ học gì, theo thứ tự nào, dùng template nào, đọc file nào. Kết quả học được ghi vào [`mvp/health/`](../../mvp/health/CLAUDE.md), mỗi module 1 đến 3 file. Tiến độ và bối cảnh để phiên sau làm tiếp nằm ở `mvp/health/CLAUDE.md`.
 
 ---
 
@@ -18,6 +18,7 @@
   - [Giai đoạn 3 — Nghiệp vụ lâm sàng](#giai-đoạn-3--nghiệp-vụ-lâm-sàng-clinical-workflows)
   - [Giai đoạn 4 — Chu trình doanh thu](#giai-đoạn-4--chu-trình-doanh-thu-revenue-cycle)
   - [Giai đoạn 5 — Vận hành & mô hình kinh doanh](#giai-đoạn-5--vận-hành-nền-tảng--mô-hình-kinh-doanh)
+  - [Đối chứng OpenEMR theo module](#đối-chứng-openemr-theo-module)
 - [5. Lịch trình đề xuất](#5-lịch-trình-đề-xuất)
 - [6. Definition of Done cho mỗi file](#6-definition-of-done-cho-mỗi-file)
 - [7. Bài mẫu đầu tiên — phác thảo chi tiết module 1a](#7-bài-mẫu-đầu-tiên--phác-thảo-chi-tiết-module-1a)
@@ -76,9 +77,9 @@ Không gắn nhãn ✅ cho thứ chỉ đọc trong docs. Docs có thể lệch 
 
 | Mã | Loại | Tên file | Thứ tự |
 |---|---|---|---|
-| **R** | Đọc code thật (tương đương `1b` của Saleor) | `medplum-<mã>-<chủ-đề>.md` (VD `medplum-1a-fhir-datastore.md`) | Viết **sau** G, trước C |
-| **G** | Greenfield practice | `medplum-greenfield-design-practice-<chủ-đề>.md` | Viết **đầu tiên**, không mở code thật trước khi xong V1–V3 |
-| **C** | So sánh kỹ thuật | `medplum-design-technique-comparison-<chủ-đề>.md` | Viết **cuối**, cần R làm nguồn ✅ |
+| **R** | Đọc code thật (tương đương `1b` của Saleor) | `mvp/health/<mã>-<chủ-đề>.md` (VD `1a-fhir-datastore.md`) | Viết **sau** G, trước C |
+| **G** | Greenfield practice | `mvp/health/<mã>-greenfield-<chủ-đề>.md` | Viết **đầu tiên**, không mở code thật trước khi xong V1–V3 |
+| **C** | So sánh kỹ thuật | `mvp/health/<mã>-comparison-<chủ-đề>.md` | Viết **cuối**, cần R làm nguồn ✅ |
 
 Thứ tự **G → R → C** giữ đúng nguyên tắc của template: tự thiết kế trước, mở đáp án sau, để khoảng cách thật không bị che. Riêng Giai đoạn 0 và các module chỉ có R thì đọc thẳng.
 
@@ -162,6 +163,31 @@ Phần "góc nhìn kinh doanh" 📘/🧠 bắt buộc có trong mỗi file Giai 
 | 5d | **Tổng hợp chiến lược** 🧠: Medplum đứng ở đâu trong chuỗi giá trị health-tech (headless EHR / developer platform), so với EHR truyền thống và các platform FHIR khác; đòn bẩy của open-core | Bài phân tích, không theo template | Kết quả 1a–4d + docs; mọi nhận định về giá/khách hàng phải 📘 kèm nguồn công khai, không đoán |
 
 ---
+
+### Đối chứng OpenEMR theo module
+
+OpenEMR (PHP, phòng khám ngoại trú Mỹ) có phần nghiệp vụ mà Medplum để cho đối tác. Không cần fork: clone đọc trực tiếp khi cần.
+
+```bash
+GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 https://github.com/openemr/openemr /home/user/openemr/openemr
+```
+
+Commit đã dùng để grounding: `4c1eb8d`. Đường dẫn bên dưới tính từ gốc repo OpenEMR.
+
+| Module Medplum | Đối chiếu trong OpenEMR | Vì sao đáng xem |
+|---|---|---|
+| 1a datastore | `sql/database.sql`: `patient_data` (:8350), `form_vitals` (:2422), `lists` (:7685), `forms` (:2464), `lbf_data` (:10262), `shared_attributes` (:12603) | Đủ 4 kỹ thuật lưu trữ (cột cố định, STI, đa hình, EAV) trong 1 schema thật |
+| 1c phân quyền | phpGACL `gacl_aro` (:2639), `src/Gacl/` | Mô hình ACL kiểu cũ so với AccessPolicy + compartment |
+| 1f audit | `log` (:7772), `api_log` (:92) | Nhật ký dạng bảng log so với `AuditEvent` + `_History` |
+| 3a định danh bệnh nhân | `patient_data.dupscore` (:8468), `src/Services/Patient/DuplicatePatientService.php`, `interface/patient_file/merge_patients.php` | Ghép trùng theo điểm so với `$match` |
+| 3b đặt lịch | `openemr_postcalendar_events` (:8275), `patient_tracker` (:8574), `src/Appointment/` | 1 bảng sự kiện lịch so với Schedule/Slot/Appointment |
+| 3e thuốc | `prescriptions` (:8714), `interface/drugs/`, `src/Rx/` | Kê đơn và kho thuốc tại phòng khám |
+| 3f xét nghiệm | `procedure_order` (:10395), `procedure_report` (:10493), `procedure_result` (:10519) | Vòng đời chỉ định → kết quả |
+| 4a quyền lợi BH | `src/Billing/EDI270.php`, `interface/billing/edi_271.php`, `insurance_data` (:3310) | Giao dịch X12 270/271 thật |
+| 4b định giá | `codes` (:1125), `prices` (:8776), `billing` (:246) | Bảng giá theo mức giá và payer |
+| 4c claim | `claims` (:379), `src/Billing/X125010837P.php`, `src/Billing/ParseERA.php`, `ar_session` (:10184), `ar_activity` (:10214) | Toàn bộ vòng 837 → 835 → công nợ |
+| 4d chất lượng | `src/Cqm/`, `src/ClinicalDecisionRules/` | Đo lường chất lượng, quy tắc lâm sàng |
+| Lớp FHIR | `src/Services/FHIR/*Service.php` | Cách 1 hệ thống "nghiệp vụ trước" dịch sang FHIR |
 
 ## 5. Lịch trình đề xuất
 

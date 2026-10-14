@@ -7,7 +7,7 @@
 | **G — Greenfield** | [`saleor-greenfield-design-practice-product-attribute.md`](./saleor-greenfield-design-practice-product-attribute.md) | "Nếu chưa có dòng code nào, mình sẽ đi tới thiết kế này bằng con đường nào?" | Module có bài toán nghiệp vụ rõ (đặt lịch, billing, phân quyền...), muốn luyện discovery → thiết kế |
 | **C — So sánh kỹ thuật** | [`saleor-design-technique-comparison-product-attribute.md`](./saleor-design-technique-comparison-product-attribute.md) | "Có N cách giải ngang hàng, vì sao hệ thống thật chọn cách này?" | Module có quyết định kỹ thuật lớn, có nhiều ứng viên cạnh tranh (cách lưu trữ, cách index, cách mở rộng) |
 
-Cả 2 template đều dựa vào 1 loại file thứ 3 làm nguồn grounding. Trong Saleor đó là file `1b` (đọc code đã hoàn thiện, có `file:line`). Bên Medplum gọi loại này là **R — Đọc code thật**, xem quy ước trong [kế hoạch](../medplum-deep-dive-plan.md#3-quy-ước-chung-cho-mọi-file).
+Cả 2 template đều dựa vào 1 loại file thứ 3 làm nguồn grounding. Trong Saleor đó là file `1b` (đọc code đã hoàn thiện, có `file:line`). Bên Medplum gọi loại này là **R — Đọc code thật**. Kết quả học nằm ở [`mvp/health/`](../../../mvp/health/CLAUDE.md), xem quy ước trong [kế hoạch](../medplum-deep-dive-plan.md#3-quy-ước-chung-cho-mọi-file).
 
 ## Bộ khung rút gọn — Template G
 
