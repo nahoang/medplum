@@ -144,7 +144,7 @@ Bước ①–⑧ là **lâm sàng** (dòng thông tin). Bước ⑨–⑪ là *
 | ⑦ Thuốc | Bác sĩ kê, **nhà thuốc** cấp | Bệnh nhân | Bảo hiểm | Dược sĩ (tương tác thuốc) |
 | ⑨–⑪ Tài chính | Biller / kế toán | Phòng khám | **Bảo hiểm**, bệnh nhân (đồng chi trả) | Kế toán (công nợ không khớp) |
 
-Cột "Trả tiền / kiểm tra" chính là khác biệt K6 trong [kế hoạch](../../docs/domain/medplum-deep-dive-plan.md#1-khác-biệt-cốt-lõi-khi-chuyển-từ-saleor-sang-medplum). Ecommerce gần như không có cột này.
+Cột "Trả tiền / kiểm tra" chính là khác biệt K6 trong [kế hoạch](./plan.md#1-khác-biệt-cốt-lõi-khi-chuyển-từ-saleor-sang-medplum). Ecommerce gần như không có cột này.
 
 ## 4. Quan sát rút ra
 

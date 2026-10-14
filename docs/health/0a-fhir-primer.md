@@ -206,7 +206,7 @@ FHIR chuẩn không đủ cho 1 nền tảng SaaS nhiều tenant. Medplum thêm 
 
 `AccessPolicy`, `Agent`, `AsyncJob`, `Bot`, `BulkDataExport`, `ClientApplication`, `Cron`, `DicomInstance`, `DicomSeries`, `DicomStudy`, `DomainConfiguration`, `Enterprise`, `JsonWebKey`, `Login`, `Package`, `PackageInstallation`, `PackageRelease`, `Project`, `ProjectMembership`, `SmartAppLaunch`, `SmartHealthLink`, `User`, `UserConfiguration`, `UserSecurityRequest`
 
-🧠 Quan sát: toàn bộ danh sách là **hạ tầng nền tảng** (tenant, người dùng, auth, bot, DICOM). Không có resource nghiệp vụ lâm sàng nào. Medplum giữ đúng nguyên tắc **"nghiệp vụ y tế để FHIR định nghĩa, Medplum chỉ thêm phần vận hành nền tảng"**. Đây là bằng chứng cho khác biệt K1 trong [kế hoạch](../../docs/domain/medplum-deep-dive-plan.md#1-khác-biệt-cốt-lõi-khi-chuyển-từ-saleor-sang-medplum).
+🧠 Quan sát: toàn bộ danh sách là **hạ tầng nền tảng** (tenant, người dùng, auth, bot, DICOM). Không có resource nghiệp vụ lâm sàng nào. Medplum giữ đúng nguyên tắc **"nghiệp vụ y tế để FHIR định nghĩa, Medplum chỉ thêm phần vận hành nền tảng"**. Đây là bằng chứng cho khác biệt K1 trong [kế hoạch](./plan.md#1-khác-biệt-cốt-lõi-khi-chuyển-từ-saleor-sang-medplum).
 
 ---
 

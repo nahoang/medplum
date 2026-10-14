@@ -31,7 +31,7 @@
 
 **Không là:** 1 phần mềm EHR dùng ngay cho phòng khám. Không có sẵn màn hình viện phí, không có quy trình khám bệnh dựng sẵn. App `packages/provider` và các `examples/*` là bản mẫu, không phải sản phẩm hoàn chỉnh.
 
-🧠 Hệ quả cho việc học: Medplum dạy rất tốt **"dữ liệu y tế có hình dạng gì và được lưu, tìm, bảo vệ ra sao"**. Nó dạy ít **"phòng khám vận hành ra sao"**. Phần sau phải lấy từ OpenEMR, docs, và phỏng vấn người làm thật. Xem đánh giá đầy đủ ở [`CLAUDE.md`](./CLAUDE.md#đánh-giá-nguồn-học-đã-chốt).
+🧠 Hệ quả cho việc học: Medplum dạy rất tốt **"dữ liệu y tế có hình dạng gì và được lưu, tìm, bảo vệ ra sao"**. Nó dạy ít **"phòng khám vận hành ra sao"**. Phần sau phải lấy từ OpenEMR, docs, và phỏng vấn người làm thật. Xem đánh giá đầy đủ ở [`docs/CLAUDE.md`](../CLAUDE.md#đánh-giá-nguồn-học-đã-chốt).
 
 ## 2. Các khối trong monorepo
 

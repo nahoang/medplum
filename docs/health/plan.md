@@ -1,8 +1,8 @@
 # Kế hoạch đào sâu toàn bộ Medplum — học domain knowledge y tế số qua code thật
 
-> Áp đúng phương pháp đã dùng cho Saleor (xem [`templates/`](./templates/README.md)), chuyển sang domain **y tế số / FHIR**. Mục tiêu không phải thuộc lòng Medplum. Mục tiêu là hiểu **nghiệp vụ y tế** (đặt lịch, kê đơn, xét nghiệm, thanh toán bảo hiểm, tuân thủ pháp lý) và **vì sao một nền tảng thật hiện thực nó theo cách này**. Medplum là bằng chứng code (`file:line`) cho từng kết luận.
+> Áp đúng phương pháp đã dùng cho Saleor (xem [`docs/templates/`](../templates/README.md)), chuyển sang domain **y tế số / FHIR**. Mục tiêu không phải thuộc lòng Medplum. Mục tiêu là hiểu **nghiệp vụ y tế** (đặt lịch, kê đơn, xét nghiệm, thanh toán bảo hiểm, tuân thủ pháp lý) và **vì sao một nền tảng thật hiện thực nó theo cách này**. Medplum là bằng chứng code (`file:line`) cho từng kết luận.
 >
-> File này là **kế hoạch**: nói rõ học gì, theo thứ tự nào, dùng template nào, đọc file nào. Kết quả học được ghi vào [`mvp/health/`](../../mvp/health/CLAUDE.md), mỗi module 1 đến 3 file. Tiến độ và bối cảnh để phiên sau làm tiếp nằm ở `mvp/health/CLAUDE.md`.
+> File này là **kế hoạch**: nói rõ học gì, theo thứ tự nào, dùng template nào, đọc file nào. Kết quả học được ghi ngay trong thư mục này (`docs/health/`), mỗi module 1 đến 3 file. Tiến độ và bối cảnh để phiên sau làm tiếp nằm ở [`docs/CLAUDE.md`](../CLAUDE.md).
 
 ---
 
@@ -77,9 +77,9 @@ Không gắn nhãn ✅ cho thứ chỉ đọc trong docs. Docs có thể lệch 
 
 | Mã | Loại | Tên file | Thứ tự |
 |---|---|---|---|
-| **R** | Đọc code thật (tương đương `1b` của Saleor) | `mvp/health/<mã>-<chủ-đề>.md` (VD `1a-fhir-datastore.md`) | Viết **sau** G, trước C |
-| **G** | Greenfield practice | `mvp/health/<mã>-greenfield-<chủ-đề>.md` | Viết **đầu tiên**, không mở code thật trước khi xong V1–V3 |
-| **C** | So sánh kỹ thuật | `mvp/health/<mã>-comparison-<chủ-đề>.md` | Viết **cuối**, cần R làm nguồn ✅ |
+| **R** | Đọc code thật (tương đương `1b` của Saleor) | `docs/health/<mã>-<chủ-đề>.md` (VD `1a-fhir-datastore.md`) | Viết **sau** G, trước C |
+| **G** | Greenfield practice | `docs/health/<mã>-greenfield-<chủ-đề>.md` | Viết **đầu tiên**, không mở code thật trước khi xong V1–V3 |
+| **C** | So sánh kỹ thuật | `docs/health/<mã>-comparison-<chủ-đề>.md` | Viết **cuối**, cần R làm nguồn ✅ |
 
 Thứ tự **G → R → C** giữ đúng nguyên tắc của template: tự thiết kế trước, mở đáp án sau, để khoảng cách thật không bị che. Riêng Giai đoạn 0 và các module chỉ có R thì đọc thẳng.
 
