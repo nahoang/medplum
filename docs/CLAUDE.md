@@ -63,6 +63,11 @@ docs/
   ```
 
   Cần đúng commit cũ thì thử `git fetch --depth 1 origin 4c1eb8d`. Không được thì dùng HEAD mới và cập nhật hash trong file.
+- **Nguồn đối chứng thứ 2:** HAPI FHIR, commit `6d818ea`. Clone chỉ đọc khi cần:
+
+  ```bash
+  GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 https://github.com/hapifhir/hapi-fhir /home/user/hapifhir/hapi-fhir
+  ```
 - **Kịch bản xuyên suốt:** bà **Nguyễn Thị Lan**, 68 tuổi, tiểu đường type 2, khám tại Phòng khám An Bình với BS Trần Văn Minh, huyết áp 150/95, chỉ định HbA1c.
 - **Quy ước riêng:** phân biệt 3 lớp quyết định: HL7 spec / profile quốc gia / Medplum. Chỉ lớp thứ 3 mới viết "Medplum chọn…". Module chạm dữ liệu bệnh nhân phải có ít nhất 1 đặc tính pháp lý. Definition of Done: mục 6 của `docs/health/plan.md`.
 - **Test:** `packages/core` chạy không cần DB. `packages/server` cần Postgres + Redis.
@@ -77,6 +82,7 @@ docs/
 | `docs/health/0a-fhir-primer.md` | 10 khái niệm FHIR, kịch bản bà Lan |
 | `docs/health/0b-ban-do-nghiep-vu-resource.md` | Bảng tra: nghiệp vụ → resource FHIR → operation Medplum → bảng OpenEMR, kèm stakeholder |
 | `docs/health/1a-fhir-datastore.md` | Medplum lưu resource xuống Postgres thế nào (4 chiến lược index, lịch sử, tiến hoá TEXT → NUMRANGE), đối chiếu OpenEMR |
+| `docs/health/1a-comparison-fhir-datastore.md` | So sánh 5 cách lưu: cột cố định (OpenEMR), EAV chuỗi, JSONB, bảng index theo kiểu (HAPI), bảng rộng (Medplum). Checklist chọn cho MVP. Phụ lục tìm tên tiếng Việt |
 
 ### Đánh giá nguồn học (đã chốt)
 
@@ -118,7 +124,12 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
    - EAV: `lbf_data`
 
    Ngoài ra `form_vitals.bps` (huyết áp) là `varchar(40)`.
-5. Triết lý đối lập: **Medplum "chuẩn trước, nghiệp vụ tự xây"** vs **OpenEMR "nghiệp vụ trước, FHIR là lớp dịch"** (`src/Services/FHIR/*`).
+5. **Tìm tên không dấu (quan trọng cho Việt Nam):**
+   - HAPI bỏ dấu khi index tên (`SP_VALUE_NORMALIZED`).
+   - Medplum search `HumanName` bằng `LIKE`/`ILIKE`, không thấy bỏ dấu (`lookups/lookuptable.ts:138,176`). Nhiều khả năng `Patient?name=nguyen` không khớp "Nguyễn". **Cần test thật.**
+   - Medplum có `medplum_unaccent` nhưng chỉ dùng cho `$expand` và patient match.
+6. HAPI và Medplum đều thoả đủ yêu cầu, khác nhau ở đánh đổi **dòng ↔ cột**: HAPI chạy nhiều loại DB, Medplum gắn chặt Postgres.
+7. Triết lý đối lập: **Medplum "chuẩn trước, nghiệp vụ tự xây"** vs **OpenEMR "nghiệp vụ trước, FHIR là lớp dịch"** (`src/Services/FHIR/*`).
 
 ### Tiến độ
 
@@ -129,7 +140,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 | 0a | `0a-fhir-primer.md` | R | ✅ Xong |
 | 0b | `0b-ban-do-nghiep-vu-resource.md` | R | ✅ Xong |
 | 1a | `1a-fhir-datastore.md` | R | ✅ Xong |
-| 1a | `1a-comparison-fhir-datastore.md` | C | ⏳ Chưa. Đặc tính P1–P7 và 5 ứng viên đã phác ở mục 9 file 1a. Cần clone HAPI FHIR để grounding ứng viên 4 |
+| 1a | `1a-comparison-fhir-datastore.md` | C | ✅ Xong |
 | 1b | Search → SQL | R | ⏳ Chưa |
 | 1c | Multi-tenancy & phân quyền | G + R + C | ⏳ Chưa |
 | còn lại | Xem `docs/health/plan.md` mục 4 | | ⏳ Chưa |
@@ -139,11 +150,8 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 Theo thứ tự ưu tiên. Hỏi người dùng nếu họ muốn đổi.
 
 1. **Hỏi người dùng 3 câu chưa biết** ở mục "Bối cảnh". Câu trả lời có thể cắt kế hoạch từ 14 xuống khoảng 6–8 tuần. VD dự án Việt Nam thì thay Giai đoạn 4 bằng chuẩn BHYT.
-2. Viết `1a-comparison-fhir-datastore.md` theo Template C:
-   - Clone HAPI FHIR, tìm entity `ResourceIndexedSearchParam*` và bảng `HFJ_SPIDX_*`.
-   - Ứng viên: cột cố định (OpenEMR thật), JSONB thuần (Fhirbase), EAV (OpenEMR `lbf_data` + Medplum v1), bảng index theo kiểu (HAPI), hybrid (Medplum).
-3. Viết `1b-search.md` (R): `packages/server/src/fhir/search.ts`, chained search ở `search.ts:1689`.
-4. Viết module 1c theo G → R → C. Bối cảnh greenfield: *"Nhiều phòng khám chung 1 server, bác sĩ chỉ thấy bệnh nhân của mình"*. Code: `packages/server/src/fhir/accesspolicy.ts`, cột `compartments`, `repo.ts:1961`.
+2. Viết `1b-search.md` (R): `packages/server/src/fhir/search.ts`, chained search ở `search.ts:1689`.
+3. Viết module 1c theo G → R → C. Bối cảnh greenfield: *"Nhiều phòng khám chung 1 server, bác sĩ chỉ thấy bệnh nhân của mình"*. Code: `packages/server/src/fhir/accesspolicy.ts`, cột `compartments`, `repo.ts:1961`.
 
 ### Câu hỏi còn mở
 
