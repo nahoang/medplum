@@ -90,6 +90,7 @@ docs/
 | `docs/health/1f-history-audit-deletion.md` | Lịch sử phiên bản vs AuditEvent (log hoặc DB) vs 4 mức xoá (mềm, expunge, expunge everything, purge), If-Match, so với bảng `log` có checksum của OpenEMR |
 | `docs/health/2a-subscriptions.md`, `2a-comparison-event-delivery.md` | Subscription: dispatch queue → subscription worker, 5 lớp lọc (FHIRPath `%previous`), rest-hook/Bot/websocket, retry 4–19 lần, tự tắt, HMAC. So sánh 6 cách: polling, hook đồng bộ (OpenEMR), trigger, hàng đợi sau commit (Medplum), outbox (HAPI), CDC |
 | `docs/health/2b-bots.md`, `2b-comparison-extensibility.md` | Bot: 6 cách kích hoạt (Subscription, `$execute`, cron, webhook công khai, CDS Hooks, pre-commit), 3 runtime (Lambda, vmcontext, Fission), membership + secrets, ~50 Bot mẫu theo nghiệp vụ. So sánh 6 cách tuỳ biến: fork, module OpenEMR, interceptor HAPI, webhook ngoài, Bot Lambda, Bot vmcontext |
+| `docs/health/2c-agent-hl7v2.md` | HL7 v2 (MSH/PID/PV1/OBR/OBX, ADT/ORM/ORU/SIU/DFT), MLLP. Medplum Agent trong mạng bệnh viện ↔ WSS ↔ server. ACK original (3–4 tin/s) vs enhanced (300–400 tin/s). Hàng đợi bền SQLite trên Agent, **mặc định tắt** (`app.ts:562`). So với HL7 lab của OpenEMR |
 
 ### Đánh giá nguồn học (đã chốt)
 
@@ -158,6 +159,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 | 1f | `1f-history-audit-deletion.md` | R | ✅ Xong. **Hết Giai đoạn 1** |
 | 2a | `2a-subscriptions.md`, `2a-comparison-event-delivery.md` | R + C | ✅ Xong |
 | 2b | `2b-bots.md`, `2b-comparison-extensibility.md` | R + C | ✅ Xong |
+| 2c | `2c-agent-hl7v2.md` | R | ✅ Xong |
 | còn lại | Xem `docs/health/plan.md` mục 4 | | ⏳ Chưa |
 
 ### Việc tiếp theo
