@@ -55,8 +55,8 @@ docs/
 
 ### Bối cảnh
 
-- **Nguồn chính:** Medplum, chính repo này (`nahoang/medplum`), nhánh `claude/peaceful-allen-kdyk9w`. Commit dùng để grounding: `16cb130`.
-- **Nguồn đối chứng:** OpenEMR, commit `4c1eb8d`. **Không fork.** Clone chỉ đọc, mất khi phiên kết thúc:
+- **Nguồn chính:** Medplum, chính repo này (`nahoang/medplum`). Giai đoạn 0–2 ở nhánh `claude/peaceful-allen-kdyk9w`; Giai đoạn 3–5 ở nhánh `claude/eager-darwin-e7o2j0` (nối tiếp từ nhánh trước, chứa toàn bộ). Commit dùng để grounding: `16cb130`.
+- **Nguồn đối chứng:** OpenEMR, commit `4c1eb8d` (Giai đoạn 0–2) và `ebe3ee8` (Giai đoạn 3–5, bản clone mới; số dòng `sql/database.sql` trích trong file 3x–5x theo commit này). **Không fork.** Clone chỉ đọc, mất khi phiên kết thúc:
 
   ```bash
   GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 https://github.com/openemr/openemr /home/user/openemr/openemr
@@ -78,6 +78,7 @@ docs/
 | Đường dẫn | Nội dung |
 |---|---|
 | `docs/health/plan.md` | **Kế hoạch tổng**: 6 giai đoạn, khoảng 40 file, lịch 14 tuần, Definition of Done, bảng đối chứng OpenEMR theo module |
+| `docs/health/README.md` | **Mục lục đọc theo vai trò** (consultant / BA / dev) + 10 phát hiện đáng nhớ nhất. Đọc file này đầu tiên khi quay lại domain |
 | `docs/health/00-tong-quan-medplum.md` | Bản đồ monorepo, đường đi 1 request ghi, so sánh triết lý Medplum với OpenEMR |
 | `docs/health/0a-fhir-primer.md` | 10 khái niệm FHIR, kịch bản bà Lan |
 | `docs/health/0b-ban-do-nghiep-vu-resource.md` | Bảng tra: nghiệp vụ → resource FHIR → operation Medplum → bảng OpenEMR, kèm stakeholder |
@@ -92,6 +93,18 @@ docs/
 | `docs/health/2b-bots.md`, `2b-comparison-extensibility.md` | Bot: 6 cách kích hoạt (Subscription, `$execute`, cron, webhook công khai, CDS Hooks, pre-commit), 3 runtime (Lambda, vmcontext, Fission), membership + secrets, ~50 Bot mẫu theo nghiệp vụ. So sánh 6 cách tuỳ biến: fork, module OpenEMR, interceptor HAPI, webhook ngoài, Bot Lambda, Bot vmcontext |
 | `docs/health/2c-agent-hl7v2.md` | HL7 v2 (MSH/PID/PV1/OBR/OBX, ADT/ORM/ORU/SIU/DFT), MLLP. Medplum Agent trong mạng bệnh viện ↔ WSS ↔ server. ACK original (3–4 tin/s) vs enhanced (300–400 tin/s). Hàng đợi bền SQLite trên Agent, **mặc định tắt** (`app.ts:562`). So với HL7 lab của OpenEMR |
 | `docs/health/2d-interoperability.md` | 6 cửa ra: Bulk `$export` (NDJSON, `_since`/`_type`), `$everything`, `$summary` + C-CDA, SMART Health Card/Link. Danh sách tiêu chí **ONC Medplum đã chứng nhận** (a2…g10) và ý nghĩa kinh doanh. So với OpenEMR EHI exporter |
+| `docs/health/3a-*.md` (2 file) | Định danh & tiếp nhận: G (bà Lan đăng ký 3 lần + con gái cùng tên), R (`$match` theo khung CMS v3.4.0: 3 chiến lược thu ứng viên, 12 trường, bảng tổ hợp, 3 tầng, chặn song sinh, audit `onlyCertainMatches`; `$extract` SDC; Bot tiếp nhận luôn tạo mới; gộp bằng `Patient.link` ở Bot mẫu). Đối chiếu OpenEMR `dupscore` + gộp vật lý |
+| `docs/health/3b-*.md` (3 file) | Đặt lịch: G, R (`SchedulingParameters` thay ô sinh sẵn, `$find` tính giờ trống, sức chứa quét sự kiện lấy min, `$hold`/`$book` trong giao dịch **SERIALIZABLE** + thử lại 3 lần, `$hold` không TTL), C (6 cách chống đặt trùng: không kiểm tra/OpenEMR, check-then-insert, UPDATE ô sinh sẵn, exclusion constraint, khoá tài nguyên, SSI) |
+| `docs/health/3c-charting-encounter.md` | 2 lớp dữ liệu (người / lần khám), SOAP → FHIR, vòng đời Encounter, **ký & khoá chỉ ở giao diện** app Provider (Provenance không có chữ ký số), phân mục `$summary`. OpenEMR `esign_signatures` có hash |
+| `docs/health/3d-*.md` (2 file) | Care plan: G (phác đồ tiểu đường, V3 = `$apply` + cron + Subscription), R (`$apply` sinh CarePlan/RequestGroup/Task/ServiceRequest nháp; **bỏ qua condition, action lồng, timing, không giao dịch**; Task là động cơ quy trình; nhận việc bằng JSON Patch `test` versionId). OpenEMR CDR chỉ sinh nhắc nhở |
+| `docs/health/3e` … `3i` (5 file R ngắn) | Thuốc & eRx (vendor-neutral order, `status: unknown` khi mất phản hồi, kho thuốc OpenEMR), xét nghiệm (Health Gorilla AOE, `billTo`, DICOMweb 1 phần), Questionnaire (logic form ở client, server không kiểm tra câu bắt buộc), giao tiếp (thread 2 tầng Communication, Task trả lời, eFax hosted, phiên nhắn tin = Encounter để tính tiền), Consent (**không chặn truy cập**, ảnh chữ ký) |
+| `docs/health/4a-*.md` (2 file) | Quyền lợi BH: G (Medicare + Medigap, 3 tầng câu hỏi, ROI giả định), R (`Coverage`, `$submit` = **bộ điều phối** setting → OperationDefinition → Bot; Bot mẫu giả lập). OpenEMR tự dựng X12 270, `EQ*30` cố định |
+| `docs/health/4b-*.md` (3 file) | Định giá: G (3 con số giá: niêm yết, allowed, thực trả; điều chỉnh hợp đồng), R (`ChargeItemDefinition/$apply`: không nhân số lượng, bỏ tax, không hiệu lực, điều kiện cuối ghi đè; app Provider **tính lại giá mỗi lần mở**; `$set-accounts` là phân quyền), C (5 cách: phẳng, ma trận OpenEMR, bảng/payer, công thức % bảng gốc, quy tắc/mã Medplum; so Saleor) |
+| `docs/health/4c-claim.md` | 837 → 835, nhóm CAS (CO/PR/OA/PI), CARC, chỉ số A/R. `Claim/$submit` (+ prior auth), `$export` CMS-1500 (không chia trang > 6 dòng), app Provider thiếu `diagnosisSequence`, Candid/Stedi. Medplum **không có** 835/công nợ; OpenEMR có `ar_session`/`ar_activity` |
+| `docs/health/4d-do-luong-chat-luong.md` | Value-based care, `$evaluate-measure` = search + đếm resource theo `_lastUpdated` (4 giới hạn). OpenEMR có engine CQL PHP + QRDA |
+| `docs/health/4e-phu-luc-bhyt-viet-nam.md` | Ánh xạ revenue cycle Mỹ ↔ BHYT: 1 payer, giá nhà nước, XML QĐ 130/4750/3176, tra cứu thẻ qua cổng giám định, mức hưởng, Luật 51/2024. Có link nguồn, **chưa đối chiếu văn bản gốc** |
+| `docs/health/5a` … `5c` (3 file R) | Rate limit theo IP, FHIR quota theo điểm (đọc 1/tìm 20/ghi 100, mặc định 50.000/phút/user), resource cap; self-host (CDK/Helm/Terraform), migration 2 pha + manifest `requiredBefore`, sharding theo project (đang chuẩn bị); `$init` 4 policy mặc định, `$clone`, `$archive`/`$restore` giữ lịch sử |
+| `docs/health/5d-tong-hop-chien-luoc.md` | **Bài tổng hợp chiến lược**: vị trí chuỗi giá trị, Medplum làm gì/để gì, open-core + bảng giá công khai (Free/Production 2.000$/Premium 6.000$/Enterprise), lợi thế bền (chứng nhận, vận hành, đối tác), đối thủ, rủi ro, cây quyết định MVP |
 
 ### Đánh giá nguồn học (đã chốt)
 
@@ -103,7 +116,7 @@ docs/
   - **Pháp lý & dòng tiền:** bảo hiểm, quy định từng nước. Medplum chỉ theo Mỹ.
 - Medplum là nền tảng "headless", **không phải EHR**. Logic lâm sàng phần lớn là "CRUD chuẩn" theo spec. Ngoại lệ có logic server dày là đặt lịch (`$find/$hold/$book…`) và terminology.
 - Độ khó học, từ dễ đến khó: **ecommerce < fintech < y tế**. Lợi thế của người dùng là nền tài chính, giúp tiếp cận revenue cycle nhanh.
-- Nếu dự án ở **Việt Nam**: Giai đoạn 4 (revenue cycle Mỹ) ít dùng lại được. Cần học chuẩn dữ liệu XML thanh toán BHYT của Bộ Y tế (hiện được biết là QĐ 130/QĐ-BYT, **cần kiểm tra văn bản hiện hành**) và quy định hồ sơ bệnh án điện tử.
+- Nếu dự án ở **Việt Nam**: Giai đoạn 4 (revenue cycle Mỹ) ít dùng lại được. Cần học chuẩn dữ liệu XML thanh toán BHYT của Bộ Y tế (QĐ 130/QĐ-BYT, sửa bởi QĐ 4750/QĐ-BYT và QĐ 3176/QĐ-BYT; tổng hợp ở `health/4e-phu-luc-bhyt-viet-nam.md`, **chưa đối chiếu bản gốc**) và quy định hồ sơ bệnh án điện tử.
 - Nên bổ sung: phỏng vấn 1–2 người làm thật (lễ tân, kế toán BHYT, điều dưỡng); dữ liệu giả lập Synthea.
 
 **Dự án mã nguồn mở đã giới thiệu để đối chứng** (chưa clone, trừ OpenEMR):
@@ -142,6 +155,14 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 7. **Subscription của Medplum có thể mất sự kiện**: enqueue vào Redis sau commit, lỗi chỉ được log (`workers/index.ts:77-85`). HAPI dùng outbox trong DB (`HFJ_RESOURCE_MODIFIED`). Quy trình nguy hiểm cần thêm cron quét làm lưới an toàn.
 8. HAPI và Medplum đều thoả đủ yêu cầu, khác nhau ở đánh đổi **dòng ↔ cột**: HAPI chạy nhiều loại DB, Medplum gắn chặt Postgres.
 9. Triết lý đối lập: **Medplum "chuẩn trước, nghiệp vụ tự xây"** vs **OpenEMR "nghiệp vụ trước, FHIR là lớp dịch"** (`src/Services/FHIR/*`).
+10. **Đường ranh nhất quán (Giai đoạn 3–5):** thứ gì là dữ liệu và bất biến hệ thống thì Medplum làm kỹ (search, phân quyền, đặt lịch SERIALIZABLE, ghép hồ sơ CMS, migration 2 pha). Thứ gì là chính sách kinh doanh hoặc quy định riêng 1 thị trường thì để cho Bot/đối tác. Chi tiết: `5d` mục 3.
+11. **3 operation "tri thức" là hiện thực tối thiểu:** `PlanDefinition/$apply` bỏ qua `condition`/action lồng/timing, không giao dịch; `ChargeItemDefinition/$apply` không nhân `quantity`, bỏ `tax`, không xét `effectivePeriod`, nhiều điều kiện thì điều kiện cuối ghi đè; `$evaluate-measure` đếm resource (không đếm bệnh nhân) theo `_lastUpdated`.
+12. **`$submit` (eligibility, claim, prior auth) chỉ là bộ điều phối:** đọc `Project.setting` → OperationDefinition → Bot (`operations/utils/submit.ts:21-51`). Medplum không có 835, sổ công nợ.
+13. **Đặt lịch:** giờ trống được **tính** từ `SchedulingParameters`, chỉ lưu Slot bận; chống trùng bằng giao dịch SERIALIZABLE + kiểm tra lại + thử lại 3 lần (`utils/scheduling.ts:1093-1114`, test song song `book.test.ts:781`). **`$hold` không có TTL.**
+14. **Tiếng Việt khi ghép hồ sơ:** `foldString` xoá chữ Đ ("Đặng" → "ang"); bước thu ứng viên của `$match` so SĐT nguyên văn và tìm tên không bỏ dấu, nên "Nguyen" + "0912345678" không tìm ra "Nguyễn" + "0912 345 678".
+15. **Ghi nhận ≠ thực thi:** `Consent` không chặn truy cập; "ký & khoá" hồ sơ trong app Provider chỉ khoá giao diện; Provenance không có chữ ký số.
+16. **App mẫu Provider có lỗi nghiệp vụ tài chính:** tính lại giá mỗi lần mở tab Billing (giá trôi), Claim không có `diagnosisSequence`, không nhân số lượng.
+17. **Mô hình kinh doanh:** Free tier không bật Bot (mà Bot chứa mọi logic nghiệp vụ); Production 2.000$/tháng, Premium 6.000$/tháng (medplum.com/pricing, 10/2026). Lợi thế bền là chứng nhận (ONC, SOC 2, HITRUST) + vận hành + mạng đối tác, không phải code.
 
 ### Tiến độ
 
@@ -162,26 +183,36 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 | 2b | `2b-bots.md`, `2b-comparison-extensibility.md` | R + C | ✅ Xong |
 | 2c | `2c-agent-hl7v2.md` | R | ✅ Xong |
 | 2d | `2d-interoperability.md` | R | ✅ Xong. **Hết Giai đoạn 2** |
-| còn lại | Xem `docs/health/plan.md` mục 4 | | ⏳ Chưa |
+| 3a | `3a-greenfield-dinh-danh-benh-nhan.md`, `3a-dinh-danh-tiep-nhan.md` | G + R | ✅ Xong |
+| 3b | `3b-greenfield-dat-lich.md`, `3b-dat-lich.md`, `3b-comparison-chong-dat-trung.md` | G + R + C | ✅ Xong |
+| 3c | `3c-charting-encounter.md` | R | ✅ Xong |
+| 3d | `3d-greenfield-careplan.md`, `3d-careplan-task.md` | G + R | ✅ Xong |
+| 3e–3i | `3e-thuoc-ke-don.md`, `3f-xet-nghiem-hinh-anh.md`, `3g-questionnaire.md`, `3h-giao-tiep.md`, `3i-consent.md` | R | ✅ Xong. **Hết Giai đoạn 3** |
+| 4a | `4a-greenfield-quyen-loi-bao-hiem.md`, `4a-quyen-loi-bao-hiem.md` | G + R | ✅ Xong |
+| 4b | `4b-greenfield-dinh-gia.md`, `4b-dinh-gia-ghi-phi.md`, `4b-comparison-dinh-gia.md` | G + R + C | ✅ Xong |
+| 4c, 4d | `4c-claim.md`, `4d-do-luong-chat-luong.md` | R | ✅ Xong |
+| 4e | `4e-phu-luc-bhyt-viet-nam.md` | Phụ lục | ✅ Xong (nguồn tổng hợp, chưa đối chiếu bản gốc). **Hết Giai đoạn 4** |
+| 5a–5c | `5a-gioi-han-do-luong.md`, `5b-self-host-sharding-migration.md`, `5c-vong-doi-project.md` | R | ✅ Xong |
+| 5d | `5d-tong-hop-chien-luoc.md` | Tổng hợp | ✅ Xong. **Hết Giai đoạn 5** |
+| — | `README.md` (mục lục theo vai trò) | — | ✅ Xong. **Hết kế hoạch** |
 
 ### Việc tiếp theo
 
-**Trạng thái:** đã xong Giai đoạn 0, 1, 2 (17 file). Người dùng đã yêu cầu **đào đầy đủ mọi module** rồi tự chọn phần đọc. Không cần hỏi lại "có làm tiếp không", cứ làm tiếp theo thứ tự dưới.
+**Trạng thái:** đã xong **toàn bộ kế hoạch** (Giai đoạn 0–5, 44 file kiến thức + `README.md`). Nhánh mới nhất: `claude/eager-darwin-e7o2j0`.
 
-1. **Giai đoạn 3**, theo `docs/health/plan.md` mục 4:
-   - **3a** định danh & tiếp nhận (G + R): `fhir/operations/patientmatch.ts`, `operations/utils/cms-patient-match.ts`, `operations/extract.ts`, `lookups/humanname.ts`. Đối chứng OpenEMR `patient_data.dupscore`, `src/Services/Patient/DuplicatePatientService.php`.
-   - **3b** đặt lịch (G + R + C): `operations/find.ts`, `hold.ts`, `book.ts`, `confirm.ts`, `cancel.ts`, `reschedule.ts`, `*.recurring.test.ts`, `operations/utils/scheduling.ts`, `packages/core/src/scheduling.ts`. Đối chứng OpenEMR `openemr_postcalendar_events`. Bối cảnh G: 2 bệnh nhân giữ cùng 1 slot.
-   - **3c** charting (R), **3d** care plan/Task (G + R: `operations/plandefinitionapply.ts`), **3e–3i** (R ngắn: thuốc, xét nghiệm/DICOM, questionnaire, communication, consent).
-2. **Giai đoạn 4** (revenue cycle, sát chuyên môn người dùng): 4a eligibility (G + R), 4b định giá `chargeitemdefinitionapply.ts` (G + R + C), 4c claim `claimsubmit.ts`, `claimexport.ts`, `operations/utils/cms1500pdf.ts` (R), 4d `evaluatemeasure.ts` (R). Đối chứng OpenEMR `src/Billing/`. Thêm phụ lục BHYT Việt Nam (dùng WebSearch, ghi nguồn).
-3. **Giai đoạn 5**: 5a quota/rate limit, 5b self-host/sharding/migration, 5c vòng đời project, 5d bài tổng hợp chiến lược.
-4. Khi xong tất cả: viết `docs/health/README.md` làm mục lục đọc theo vai trò (consultant / BA / dev).
+Việc có thể làm tiếp, theo thứ tự giá trị (hỏi người dùng chọn, đừng tự làm hết):
+1. **Hỏi thông tin dự án MVP** (loại hình, thị trường, vai trò). Mọi khuyến nghị ở `5d` mục 8 phụ thuộc câu trả lời này.
+2. **Kiểm chứng bằng chạy thật** (cần `docker compose up` Postgres + Redis): `Patient?name=nguyen` có khớp "Nguyễn" không; `$match` với họ có chữ Đ; 2 `$book` song song. Ghi kết quả vào `3a`, `3b`, `1a-comparison`.
+3. **Đối chiếu văn bản gốc** cho `4e` (QĐ 130/4750/3176, Luật 51/2024, TT 22/2023, TT 21/2024, TT 13/2025, TT 26/2025). Hiện chỉ có nguồn tổng hợp.
+4. Nếu dự án ở Việt Nam: viết `4e-greenfield-xml-bhyt.md` (thiết kế Bot dựng XML1–XML5 từ resource FHIR).
+5. Viết "Tự luyện" cho từng file G (đáp án tự làm của người dùng, so với Phần 5).
 
-**Quy trình mỗi module** (đã dùng ổn định ở phiên trước):
+**Quy trình mỗi module** (đã dùng ổn định 2 phiên):
 1. Đọc code bằng `grep -n` / `sed -n`.
 2. Viết file.
-3. **Kiểm lại mọi `file:line`** (khoảng 1/3 bị lệch vài dòng ở bản nháp).
+3. **Kiểm lại mọi `file:line`** (phiên 2 vẫn lệch khoảng 1/4 trích dẫn ở bản nháp, chủ yếu do đếm dòng từ output đã lọc bằng `grep -v`).
 4. Cập nhật bảng "File" + "Tiến độ" trong file này.
-5. `git add -A docs && git add -f docs/CLAUDE.md`, commit (kèm dòng Co-Authored-By/Claude-Session theo system reminder), `git push -u origin claude/peaceful-allen-kdyk9w`.
+5. `git add -A docs && git add -f docs/CLAUDE.md`, commit (kèm dòng Co-Authored-By/Claude-Session theo system reminder), push lên nhánh được giao trong phiên đó.
 
 Clone lại OpenEMR/HAPI nếu cần (lệnh ở mục "Bối cảnh"). Phiên mới không còn bản clone cũ.
 
@@ -189,4 +220,7 @@ Clone lại OpenEMR/HAPI nếu cần (lệnh ở mục "Bối cảnh"). Phiên m
 
 - Vì sao `content` là `TEXT` chứ không `JSONB`? Chưa tìm thấy lý do chính thức. Xem mục 10 file 1a.
 - Khi nào `range-column` thành mặc định và bỏ cột cũ?
+- `extract.ts:118-125` khai báo `processingOrder` bằng tên biến (`allocIdExtension: 1`) thay vì giá trị URL, nên thứ tự xử lý extension có vẻ không có tác dụng. Chưa kiểm chứng có gây sai kết quả không (`3a` mục 8).
+- Công thức "phí dùng thêm" của bản hosted, số liệu gọi vốn/doanh thu Medplum: nguồn công khai không thống nhất (`5d` mục 4, 9).
+- Mức hưởng BHYT theo tuyến sau 01/7/2025 (`4e`).
 - Thông tin dự án MVP (xem mục "Bối cảnh").

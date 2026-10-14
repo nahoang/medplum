@@ -147,7 +147,7 @@ Phần sát nhất với chuyên môn tài chính/chiến lược. Học kỹ h�
 | Mã | Chủ đề | File | Bối cảnh greenfield gợi ý 💭 | Grounding chính ✅ |
 |---|---|---|---|---|
 | ⭐ 4a | **Bảo hiểm & kiểm tra quyền lợi**: Coverage, CoverageEligibilityRequest/Response | G + R | *"Lễ tân cần biết trước khi khám: bảo hiểm còn hiệu lực không, bệnh nhân tự trả bao nhiêu?"* | `fhir/operations/coverageeligibilityrequestsubmit.ts`, `examples/medplum-eligibility-demo` |
-| ⭐ 4b | **Định giá dịch vụ & ghi nhận phí**: ChargeItemDefinition `$apply`, ChargeItem, Account, `$set-accounts` | G + R + C | *"Cùng 1 lần khám, giá khác nhau theo payer, theo hợp đồng, theo mã CPT. Tính phí ở đâu?"* (đối chiếu bài Pricing đã làm bên Saleor) | `fhir/operations/chargeitemdefinitionapply.ts`, `set-accounts.ts`, `workers/set-accounts.ts` |
+| ⭐ 4b | **Định giá dịch vụ & ghi nhận phí**: ChargeItemDefinition `$apply`, ChargeItem, Account (⚠ `$set-accounts` xếp nhầm vào đây: nó gán `meta.accounts` cho phân quyền, không phải tài chính, xem [4b mục 6](./4b-dinh-gia-ghi-phi.md#6-nhầm-tên-set-accounts-không-phải-tài-chính)) | G + R + C | *"Cùng 1 lần khám, giá khác nhau theo payer, theo hợp đồng, theo mã CPT. Tính phí ở đâu?"* (đối chiếu bài Pricing đã làm bên Saleor) | `fhir/operations/chargeitemdefinitionapply.ts`, `set-accounts.ts`, `workers/set-accounts.ts` |
 | ⭐ 4c | **Claim**: Claim `$submit`/`$export`, ClaimResponse, ExplanationOfBenefit | R | — | `fhir/operations/claimsubmit.ts`, `claimexport.ts`, `packages/docs/docs/billing/` |
 | 4d | **Đo lường chất lượng**: Measure `$evaluate-measure` (nền của value-based care) | R | — | `fhir/operations/evaluatemeasure.ts` |
 
@@ -209,7 +209,9 @@ Giả định khoảng 6–8 giờ/tuần. Một file template đầy đủ (ki�
 | 13 | 4b (R + C), 4c, 4d | 3 R, 1 C |
 | 14 | 5a–5c, 5d tổng hợp | 3 R, 1 bài tổng hợp |
 
-Tổng: khoảng 28 R, 7 G, 5 C, 1 bài tổng hợp. Có thể cắt Giai đoạn 5 hoặc 3f–3i nếu thiếu thời gian, nhưng không cắt Giai đoạn 0 (mọi giai đoạn sau đều dựa vào nó).
+Tổng: khoảng 28 R, 7 G, 5 C, 1 bài tổng hợp.
+
+**Thực tế (10/2026):** xong toàn bộ 6 giai đoạn trong 2 phiên: 29 R, 6 G, 7 C, 1 phụ lục BHYT Việt Nam (`4e`), 1 bài tổng hợp (`5d`), 1 mục lục đọc theo vai trò ([`README.md`](./README.md)). Có thể cắt Giai đoạn 5 hoặc 3f–3i nếu thiếu thời gian, nhưng không cắt Giai đoạn 0 (mọi giai đoạn sau đều dựa vào nó).
 
 ---
 
