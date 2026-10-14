@@ -91,6 +91,7 @@ docs/
 | `docs/health/2a-subscriptions.md`, `2a-comparison-event-delivery.md` | Subscription: dispatch queue → subscription worker, 5 lớp lọc (FHIRPath `%previous`), rest-hook/Bot/websocket, retry 4–19 lần, tự tắt, HMAC. So sánh 6 cách: polling, hook đồng bộ (OpenEMR), trigger, hàng đợi sau commit (Medplum), outbox (HAPI), CDC |
 | `docs/health/2b-bots.md`, `2b-comparison-extensibility.md` | Bot: 6 cách kích hoạt (Subscription, `$execute`, cron, webhook công khai, CDS Hooks, pre-commit), 3 runtime (Lambda, vmcontext, Fission), membership + secrets, ~50 Bot mẫu theo nghiệp vụ. So sánh 6 cách tuỳ biến: fork, module OpenEMR, interceptor HAPI, webhook ngoài, Bot Lambda, Bot vmcontext |
 | `docs/health/2c-agent-hl7v2.md` | HL7 v2 (MSH/PID/PV1/OBR/OBX, ADT/ORM/ORU/SIU/DFT), MLLP. Medplum Agent trong mạng bệnh viện ↔ WSS ↔ server. ACK original (3–4 tin/s) vs enhanced (300–400 tin/s). Hàng đợi bền SQLite trên Agent, **mặc định tắt** (`app.ts:562`). So với HL7 lab của OpenEMR |
+| `docs/health/2d-interoperability.md` | 6 cửa ra: Bulk `$export` (NDJSON, `_since`/`_type`), `$everything`, `$summary` + C-CDA, SMART Health Card/Link. Danh sách tiêu chí **ONC Medplum đã chứng nhận** (a2…g10) và ý nghĩa kinh doanh. So với OpenEMR EHI exporter |
 
 ### Đánh giá nguồn học (đã chốt)
 
@@ -160,6 +161,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 | 2a | `2a-subscriptions.md`, `2a-comparison-event-delivery.md` | R + C | ✅ Xong |
 | 2b | `2b-bots.md`, `2b-comparison-extensibility.md` | R + C | ✅ Xong |
 | 2c | `2c-agent-hl7v2.md` | R | ✅ Xong |
+| 2d | `2d-interoperability.md` | R | ✅ Xong. **Hết Giai đoạn 2** |
 | còn lại | Xem `docs/health/plan.md` mục 4 | | ⏳ Chưa |
 
 ### Việc tiếp theo
@@ -167,7 +169,7 @@ Tóm tắt để phiên sau không phải đọc lại toàn bộ:
 Theo thứ tự ưu tiên. Hỏi người dùng nếu họ muốn đổi.
 
 1. **Hỏi người dùng 3 câu chưa biết** ở mục "Bối cảnh". Câu trả lời có thể cắt kế hoạch từ 14 xuống khoảng 6–8 tuần. VD dự án Việt Nam thì thay Giai đoạn 4 bằng chuẩn BHYT.
-2. Tiếp tục theo `docs/health/plan.md`: Giai đoạn 2 (2a subscriptions R+C, 2b bots R+C, 2c agent/HL7v2, 2d interoperability), rồi Giai đoạn 3–5. Người dùng đã yêu cầu **đào đầy đủ mọi module** rồi tự chọn đọc phần nào.
+2. Tiếp tục theo `docs/health/plan.md`: Giai đoạn 3 (3a G+R, 3b G+R+C, 3c R, 3d G+R, 3e–3i R), rồi Giai đoạn 4–5. Người dùng đã yêu cầu **đào đầy đủ mọi module** rồi tự chọn đọc phần nào.
 
 ### Câu hỏi còn mở
 
